@@ -29,10 +29,10 @@ $ git config --global user.name "Human Name"
 $ git config --global user.email humanname@example.com
 
 # Install GitHub desktop for pushing updates to code
-https://desktop.github.com/
+https://desktop.github.com/ # This might be redundant...I was just having a hard time getting VisualCode to push updates to GitHub before I downloaded GitHub desktop
 
 # Install visual code to have a nice environment to work on your scripts within
-https://code.visualstudio.com/
+https://code.visualstudio.com/ 
 
 # Clone the repository for our project
 https://github.com/larissaissabron/Biol470_FinalProject

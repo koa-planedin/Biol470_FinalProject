@@ -3,7 +3,7 @@
 # 1. Set up for the project and logging in
 
 # Log in to the remote server after turning on the UVic VPN (Cisco)
-ssh larissabron@indri.rcs.uvic.ca
+ssh your_username@indri.rcs.uvic.ca
 
 # Source the bash.sh file so that you have access to the modules
 source /cvmfs/soft.computecanada.ca/config/profile/bash.sh

@@ -9,7 +9,7 @@ ssh your_username@indri.rcs.uvic.ca
 source /cvmfs/soft.computecanada.ca/config/profile/bash.sh
 
 # Navigate to our project directory
-/project/ctb-grego/biol470/koa_ola_lars
+cd /project/ctb-grego/biol470/koa_ola_lars
 
 # Gave everyone permission to use the directory. Might need to change this and update future files and folders. U = users, G = group. 
 chmod ug+rwx koa_ola_lars/

@@ -19,6 +19,8 @@ cp -r  /project/ctb-grego/sharing/biol470_project /project/ctb-grego/biol470/koa
 
 # Talk to the group about how you want to work together on code. Right now you have set up a github repository and it has been working alright to install git on your computer, as well as the GitHub desktop and Visual Code. Does Koa have a better work around? 
 
+# How Larissa set up her coding party
+
 # Install git
 https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
@@ -34,4 +36,6 @@ https://code.visualstudio.com/
 
 # Clone the repository for our project
 https://github.com/larissaissabron/Biol470_FinalProject
+
+
 

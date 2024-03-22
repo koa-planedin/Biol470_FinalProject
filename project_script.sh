@@ -12,7 +12,7 @@ source /cvmfs/soft.computecanada.ca/config/profile/bash.sh
 cd /project/ctb-grego/biol470/koa_ola_lars
 
 # Gave everyone permission to use the directory. Might need to change this and update future files and folders. U = users, G = group. 
-chmod ug+rwx koa_ola_lars/
+chmod ugo+rwx koa_ola_lars/
 
 # Copy project files from Greg's directory
 cp -r  /project/ctb-grego/sharing/biol470_project /project/ctb-grego/biol470/koa_ola_lars
@@ -53,12 +53,21 @@ https://github.com/larissaissabron/Biol470_FinalProject
 
 #1) Filtering reads for adapter sequences and base quality.
 #### Lab 5: https://owensgl.github.io/intro-genomics/labs/lab_5/
+#### Trimomatic: This will do three different things: 1) Remove adapter sequences, which were added to your DNA but aren’t from your target sample’s genome. 2) Remove low quality reads. 3) Trim poor quality bases off the ends of reads. Base quality tends to decline so the ends of reads can be very low quality.
+
+# So we control what sequencing technology was used, number of leading and trailing bases, and minimum lenth 
+
+# Bash script 1
 
 #2) Alignment to a reference genome.
 #### Lab 6: https://owensgl.github.io/intro-genomics/labs/lab_6/
 
+# Bash script 2 
+
 #3) Marking or removal of duplicate reads.
 #### Lab 6 (marking duplicates, could do more to remove?): https://owensgl.github.io/intro-genomics/labs/lab_6/ 
+
+# Used picard in class to mark the duplicates for simulated data, is there any duplicates (ie. is our data also simulated?), if yes, how to remove. 
 
 #4) Variant calling.
 ##### Lab 7: https://owensgl.github.io/intro-genomics/labs/lab_7/
@@ -75,3 +84,10 @@ https://github.com/larissaissabron/Biol470_FinalProject
 #8) Genome-wide associa6on for the trait.
 ##### Lab 9: https://owensgl.github.io/intro-genomics/labs/lab_9/ 
 
+#9) Extra things
+##### FST
+##### Mapping seeing if population distance between vs PCA
+
+
+#---- Questions
+# Can we find the sequencing technology for step 1? 

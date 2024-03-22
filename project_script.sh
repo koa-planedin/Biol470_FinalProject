@@ -17,3 +17,5 @@ chmod ug+rwx koa_ola_lars/
 # Copy project files from Greg's directory
 cp -r  /project/ctb-grego/sharing/biol470_project /project/ctb-grego/biol470/koa_ola_lars
 
+# What a good time to be alive
+

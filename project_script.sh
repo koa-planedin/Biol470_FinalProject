@@ -37,5 +37,23 @@ https://code.visualstudio.com/
 # Clone the repository for our project
 https://github.com/larissaissabron/Biol470_FinalProject
 
+#2. Assignment instructions
 
+#For this project, you will be given a set of read data for mul6ple samples from multiple populatioons. Each sample will have a phenotype trait value and a population ID. The goal is to understand how the populations are related, and what that says about their history or biology, and determine the genetic basis for a phenotypic trait. Your analysis should include at least the following steps:
+
+#1) Filtering reads for adapter sequences and base quality.
+
+#2) Alignment to a reference genome.
+
+#3) Marking or removal of duplicate reads.
+
+#4) Variant calling.
+
+#5) Filtering of the VCF file.
+
+#6) Principal Component Analysis.
+
+#7) Popula6on structure analysis (e.g. STRUCTURE, admixture, dapc).
+
+#8) Genome-wide associa6on for the trait.
 

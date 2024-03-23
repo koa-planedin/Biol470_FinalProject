@@ -29,7 +29,7 @@ ln -s /project/ctb-grego/biol470/koa_ola_lars
 
 # Talk to the group about how you want to work together on code. Right now you have set up a github repository and it has been working alright to install git on your computer, as well as the GitHub desktop and Visual Code. Does Koa have a better work around? 
 
-# How Larissa set up her coding party
+# 2. How Larissa set up her coding party started
 
 # Install git
 https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
@@ -44,10 +44,12 @@ https://desktop.github.com/ # This might be redundant...I was just having a hard
 # Install visual code to have a nice environment to work on your scripts within
 https://code.visualstudio.com/ 
 
-# Clone the repository for our project
-https://github.com/larissaissabron/Biol470_FinalProject
+# Then, how I interact with things when everything is installed and ready. 1. Open up GitHub desktop, 2. Clone the repository for our project
+https://github.com/larissaissabron/Biol470_FinalProject into the GitHub desktop app, 3. Right click the cloned repository and open in Visual Studio Code for easier editing. 
 
-#2. Assignment instructions
+# When you update the script and you want to add it to the GitHub: 1. Click source control in the left tool bar in Visual Code, 2. Write a commit message, 3. Press commit, 4. Press sync. You're done! 
+
+#3. Assignment instructions
 
 #For this project, you will be given a set of read data for multiple samples from multiple populations. Each sample will have a phenotype trait value and a population ID. The goal is to understand how the populations are related, and what that says about their history or biology, and determine the genetic basis for a phenotypic trait. Your analysis should include at least the following steps:
 

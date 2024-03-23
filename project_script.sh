@@ -9,7 +9,7 @@ ssh your_username@indri.rcs.uvic.ca
 source /cvmfs/soft.computecanada.ca/config/profile/bash.sh
 
 # Navigate to our project directory
-cd /project/ctb-grego/biol470/koa_ola_lars
+cd /project/ctb-grego/biol470/koa_fola_lars
 
 # Gave everyone permission to use the directory. Might need to change this and update future files and folders. U = users, G = group. 
 chmod ugo+rwx koa_ola_lars/
@@ -89,7 +89,6 @@ https://github.com/larissaissabron/Biol470_FinalProject into the GitHub desktop 
 #9) Extra things
 ##### FST
 ##### Mapping seeing if population distance between vs PCA
-
 
 #---- Questions
 # Can we find the sequencing technology for step 1? 

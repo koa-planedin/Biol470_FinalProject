@@ -51,3 +51,32 @@ java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE DRR053219_1.fastq DRR053219
 
 # What i think the command will be for each paired read for each individual
 java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE Biol470.p1.i1.500000_R1.fastq Biol470.p1.i1.500000_R2.fastq Biol470.p1.i1.500000_R1.trim.fastq Biol470.p1.i1.500000_R1.paired.fastq Biol470.p1.i1.500000_R1.unpaired.fastq Biol470.p1.i1.500000_R2.trim.fastq Biol470.p1.i1.500000_R2.paired.fastq Biol470.p1.i1.500000_R2.unpaired.fastq ILLUMINACLIP:$EBROOTTRIMMOMATIC/adapters/TruSeq3-PE.fa:2:30:10:2:True LEADING:3 TRAILING:3 MINLEN:36
+
+# Potential script (chatGPT)
+#!/bin/bash
+
+# Set path to trimmomatic.jar
+trimmomatic_jar="$EBROOTTRIMMOMATIC/trimmomatic-0.39.jar"
+
+# Set adapter file path
+adapter_file="$EBROOTTRIMMOMATIC/adapters/TruSeq3-PE.fa"
+
+# Set additional trimmomatic options
+trim_options="LEADING:3 TRAILING:3 MINLEN:36"
+
+# Loop through each pair of input files
+for file_r1 in *R1.fastq; do
+    file_r2="${file_r1/R1/R2}"  # Get corresponding R2 file
+
+    # Check if R2 file exists
+    if [ -f "$file_r2" ]; then
+        output_base="${file_r1%.R1.fastq}"  # Remove R1.fastq extension
+        java -jar "$trimmomatic_jar" PE 
+         "$file_r1" "$file_r2" \
+            "${output_base}.R1.trim.fastq" "${output_base}.R1.paired.fastq" "${output_base}.R1.unpaired.fastq" \
+            "${output_base}.R2.trim.fastq" "${output_base}.R2.paired.fastq" "${output_base}.R2.unpaired.fastq" \
+            ILLUMINACLIP:"$adapter_file":2:30:10:2:True $trim_options
+    else
+        echo "Warning: No corresponding R2 file found for $file_r1"
+    fi
+done

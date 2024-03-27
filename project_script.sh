@@ -32,5 +32,12 @@ module load  fastqc/0.12.1
 
 fastqc *.fastq
 
-#Open a new terminal window and run this to look at resulting .html files on your own desktop
-scp 
+# Put the html files in a folder to clean up the workspace
+mkdir html
+
+mv *.html /html
+
+# Open a new terminal window and run this to look at resulting .html files on your own desktop
+scp username@indri.rcs.uvic.ca:/home/username/koa_fola_lars/biol470_project/fastq/html /path/to/your/desktop
+
+# Now you can look at the quality reports

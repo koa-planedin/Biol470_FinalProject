@@ -1,2 +1,2 @@
 # Biol470_FinalProject
-Final project Biol 470 spring 2024
+[Brainstorming document on Google Drive](https://docs.google.com/document/d/103CxzeM-J0__927dqrhumV3Su-zULxNLRdTiySVk5nM/edit)

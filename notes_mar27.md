@@ -21,17 +21,92 @@ fastqc Biol470.p1.*.500000_R2.fastq.gz
 
 #clean up directory
 mkdir output_html
+chmod ugo+rwx output_html/
 mv *.html output_html/
 ```
 
-Time to trim!
+Time to trim! Again, the reads are perfect, so lets not mess with that.
 ```console
 #load the program
 module load trimmomatic
 
-java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE DRR053219_1.fastq DRR053219_2.fastq DRR053219_1.trim.fastq DRR053219_1.unpaired.fastq DRR053219_2.trim.fastq DRR053219_2.unpaired.fastq ILLUMINACLIP:$EBROOTTRIMMOMATIC/adapters/TruSeq3-PE.fa:2:30:10:2:True LEADING:3 TRAILING:3 MINLEN:36
+#an example run
+java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE Biol470.p3.i2.500000_R1.fastq.gz Biol470.p3.i2.500000_R2.fastq.gz Biol470.p3.i2.500000_R1.trim.fastq Biol470.p3.i2.500000_R1.unpaired.fastq Biol470.p3.i2.500000_R2.trim.fastq Biol470.p3.i2.500000_R2.unpaired.fastq ILLUMINACLIP:$EBROOTTRIMMOMATIC/adapters/TruSeq3-PE.fa:2:30:10:2:True LEADING:3 TRAILING:3 MINLEN:36
 
 ```
+
+Looking at the reference genome
+```console
+module load samtools/1.18
+module load bwa-mem2/2.2.1
+
+samtools faidx SalmonReference.fasta
+bwa-mem2 index SalmonReference.fasta
+```
+
+Aligning to the reference
+```console
+#make new directory
+mkdir alignment
+chmod ugo+rwx alignment
+
+#making a script for alignment
+cd fastq/
+
+#making the actual script - the contents are in another block below
+nano align.sh
+
+#make it executable
+chmod +x align.sh
+
+#run it
+./align.sh
+```
+
+Script for alignments. Running this in the fastq folder and moving to alignment.
+```console
+for file_r1 in *R1.fastq.gz; do
+    file_r2="${file_r1/R1/R2}"  # Get corresponding R2 file
+
+    # Check if R2 file exists
+    if [ -f "$file_r2" ]; then
+        output_base="${file_r1%_*}"  # Remove R1.fastq extension
+        bwa-mem2 mem -t 2 ../ref/SalmonReference.fasta $file_r1 $file_r2 > $output_base.sam
+    else
+        echo "Warning: No corresponding R2 file found for $file_r1"
+    fi
+mv *.sam ../alignment/
+
+done
+```
+
+Now we need to sort these cuties
+```console
+cd alignment
+mkdir bam
+chmod 777 bam
+nano sort_sam.sh
+chmod +x sort_sam.sh
+./sort_sam.sh
+```
+sort_sam.sh file:
+```console
+for file in *.sam; do
+
+    # Check if R2 file exists
+    if [ -f "$file" ]; then
+        output_base="${file%.*}"  # Remove R1.fastq extension
+       echo "starting: $output_base"
+         samtools sort $file > $output_base.sort.bam
+    else
+        echo "Not found in directory: $file"
+    fi
+
+mv $output_base.sort.bam bam/
+
+done
+```
+
 
 
 Note: Greg mentioned there was an issue with renaming the chromosomes using his old code, but this would work

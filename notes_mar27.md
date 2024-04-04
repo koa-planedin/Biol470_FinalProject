@@ -106,6 +106,116 @@ mv $output_base.sort.bam bam/
 
 done
 ```
+#marking duplicates
+
+```console
+module load picard/3.1.0
+
+mkdir duplicates
+nano mark_dups.sh
+chmod +x mark_dups.sh
+./mark_dups.sh
+```
+Script for mark_dups.sh:
+```console
+for file in *.bam; do
+
+    # Check if R2 file exists
+    if [ -f "$file" ]; then
+        output_base="${file%.*}"  # Remove R1.fastq extension
+       echo "starting: $output_base"
+        java -jar $EBROOTPICARD/picard.jar MarkDuplicates I=$file O=$output_base.markdup.bam M=$o>    else
+        echo "Not found in directory: $file"
+    fi
+
+mv $output_base.markdup.bam duplicates/
+mv $output_base.dupmetrics.txt duplicates/
+
+done
+```
+Output: bam files
+
+
+Now indexing and coverage, in a file called index.sh that is running in duplicates/:
+```console
+for file in *.markdup.bam; do
+
+    #check if file is there
+    if [ -f "$file" ]; then
+        output_base="${file%.*}"  #base name
+       echo "starting: $output_base"
+         samtools index $file
+        samtools coverage $file > $output_base.coverage.txt
+    else
+        echo "Not found in directory: $file"
+    fi
+
+done
+```
+Output: indexed file (.bai) and coverage file (.coverage.txt)
+
+Variant calling:
+```console
+#adding read groups
+mkdir bam_rg
+nano name_groups.sh
+chmod +x name_groups.sh
+./name_groups.sh
+
+#make list of bamfiles
+ls bam_rg/*.bam > bamlist.txt
+
+######################
+## bcftools version ##
+######################
+
+#running mpileup in alignment/bam/duplicates/
+bcftools mpileup -q 20 -f ../../../ref/SalmonReference.fasta -b bamlist.txt > salmon_int.g.vcf
+
+#call genotypes with bcftools
+bcftools call -mv salmon_int.g.vcf | bcftools +fill-tags> salmon_int.bcftools.vcf
+
+#filter for maf, two versions
+bcftools view -q 0.1:minor salmon_int.bcftools.vcf > salmon_int.bcftools.maf10.vcf
+bcftools view -q 0.01:minor salmon_int.bcftools.vcf > salmon_int.bcftools.maf1.vcf
+
+#######################
+## freebayes version ##
+#######################
+
+#calling variants
+freebayes -L bamlist.txt -f ../../../ref/SalmonReference.fasta > salmon_int.fb.vcf
+```
+
+name_groups.sh file:
+```console
+for file in *.bam; do
+
+    #check if file is there
+    if [ -f "$file" ]; then
+        output_base="${file%.*}"  #base name
+       echo "starting: $output_base"
+
+         java -jar $EBROOTPICARD/picard.jar AddOrReplaceReadGroups \
+  I=$file \
+  O=bam_rg/$output_base.rg.bam \
+  RGSM=$output_base \
+  RGLB=$output_base \
+  RGID=$output_base \
+  RGPL=Illumina \
+  RGPU=NULL
+ 
+  samtools index bam_rg/$output_base.rg.bam
+
+    else
+        echo "Not found in directory: $file"
+    fi
+
+done
+```
+
+
+
 
 
 
@@ -113,4 +223,4 @@ Note: Greg mentioned there was an issue with renaming the chromosomes using his 
 ```console
 bcftools annotate --rename_chrs
 ```
-#editing for the sake of editing
+

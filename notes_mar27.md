@@ -214,13 +214,50 @@ for file in *.bam; do
 done
 ```
 
-
-
-
-
-
-Note: Greg mentioned there was an issue with renaming the chromosomes using his old code, but this would work
+Admixture
+(Don't trust the names to be consectutive here, but the steps are)
 ```console
-bcftools annotate --rename_chrs
+module load plink
+
+#renaming chrs - repeat with all vcfs, or repeat with each unfiltered vcf and make new filtered versions
+bcftools annotate --rename-chrs chr_map.txt salmon_int.fb.vcf > salmon_int.fb.rename.vcf
+
+#likewise, repeat
+#I'll make a nice loop for this soon
+plink --vcf vcf/salmon_int.fb.maf10.rename.vcf --out salmon_int.fb.maf10 --make-bed --allow-extra-chr --double-id --autosome-num 95
+
+#another repeat
+for K in `seq 12` /; do /; admixture --cv bed/salmon_int.fb.maf1.bed $K -j3 | tee log${K}.out; /; done
+
+#view errors for more recent set
+#when making a script I'd rename these and automatically grep the output into txt file
+grep -h CV log*.out
+#for saving the errors
+grep -h CV log*.out > cv_error_fb.maf1.txt
 ```
+R notes in the google doc for visualizing
+
+
+PCA and FST
+```console
+#PCA
+plink --vcf vcf/salmon_int.fb.maf10.rename.vcf --out salmon_int.fb.maf10 --pca --allow-extra-chr --double-id --autosome-num 95
+
+
+#sample names
+bcftools query -l salmon_int.fb.maf10.rename.vcf > sample_names.txt
+#I needed up doing some stuff with sed here
+$but importantly the new name files are made:
+#such as samples_pop5.rn.txt
+
+#another repeat step
+#A cute little script coming to youn soon
+vcftools --vcf  salmon_int.fb.maf10.rename.vcf \
+--weir-fst-pop samples_pop1.rn.txt \
+--weir-fst-pop samples_pop2.rn.txt \
+--out salmon_int.fb.maf10
+```
+
+
+
 

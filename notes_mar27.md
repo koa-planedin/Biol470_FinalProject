@@ -235,7 +235,48 @@ grep -h CV log*.out
 #for saving the errors
 grep -h CV log*.out > cv_error_fb.maf1.txt
 ```
-R notes in the google doc for visualizing
+R scripts
+```console
+#Get sample names in order from the .fam 
+sample_names <- read_table("/project/ctb-grego/biol470/koa_fola_lars/biol470_project/vcf/bed/salmon_int.fb.fam",col_names = F)
+names(sample_names)[2]<-"sample.id"
+all_data <- tibble()
+
+#Loop for each K value
+for (k in 1:12){
+  #Read the Q file 
+  data <- read_delim(paste0("/project/ctb-grego/biol470/koa_fola_lars/biol470_project/vcf/salmon_int.fb.",k,".Q"),
+                     col_names = paste0("Q",seq(1:k)),
+                     delim=" ")
+  #Add in sample names
+  data$sample.id <- sample_names$sample.id
+  #Add in the K value
+  data$k <- k
+  
+  #Convert the wide table to a long table, which is easier to plot
+  data %>% gather(Q, value, -sample.id,-k) -> data
+  #Bind together all the outputs of each K value
+  all_data <- rbind(all_data,data)
+}
+
+#sep samples names
+all_data <- all_data %>%
+  separate_wider_delim(sample.id, ".", names = c(NA,"pop","indiv", NA,NA,NA)) %>%
+  mutate(name = paste0(pop,".",indiv))
+
+#remove p from population to order them numerically
+all_data$pop<-sub("^p", "", all_data$pop)
+all_data<-all_data %>% mutate(pop = as.numeric(pop)) %>% 
+  arrange(pop)
+
+#graph of all k values by row
+#to just look at one k value, filter data and remove facet_grid
+all_data %>%
+  ggplot(.,aes(x=fct_reorder(name,pop),y=value,fill=factor(Q))) + 
+  geom_bar(stat="identity",position="stack") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  facet_grid(rows=vars(k),scales = "free", space = "free")
+```
 
 
 PCA and FST
@@ -251,13 +292,66 @@ $but importantly the new name files are made:
 #such as samples_pop5.rn.txt
 
 #another repeat step
-#A cute little script coming to youn soon
+#A cute little script coming to you soon
 vcftools --vcf  salmon_int.fb.maf10.rename.vcf \
 --weir-fst-pop samples_pop1.rn.txt \
 --weir-fst-pop samples_pop2.rn.txt \
 --out salmon_int.fb.maf10
 ```
 
+```console
 
+#########
+## pca ##
+#########
+
+#meta data for testing correlations
+meta<-read.table("/project/ctb-grego/biol470/koa_fola_lars/biol470_project/info/body_size.txt",header = T)
+loc<-read.xlsx("/project/ctb-grego/biol470/koa_fola_lars/biol470_project/info/Final_project_locations.xlsx")
+head(meta)
+
+#pca data
+pca_data <- read_table("/project/ctb-grego/biol470/koa_fola_lars/biol470_project/salmon_int.bcftools.maf1.eigenvec",
+                       col_names = c("sample.id","spacer",paste0("PC",1:20)))  
+pca_data<-pca_data %>% 
+  separate_wider_delim(spacer, ".", names = c(NA,"pop","indiv", NA,NA,NA))
+
+#remove p and/or i as needed
+pca_data$pop<-sub("^p", "", pca_data$pop)
+pca_data$indiv<-sub("^i", "", pca_data$indiv)
+
+#also, make population a factor or numeric as needed
+#to make numeric, just change "as.factor" to "as.numeric"
+pca_data<-pca_data %>% mutate(pop = as.factor(pop),
+         name = paste0(pop,".",indiv),
+         indiv = as.numeric(indiv))
+
+#adding name to meta so that they join
+meta<-meta %>% mutate(name = paste0(pop,".",individual))
+
+#join info
+pca_meta <- left_join(pca_data,meta)
+pca_meta$pop<-as.factor(pca_meta$pop)
+
+#plot data
+pca_data %>%
+  ggplot(.,aes(x=PC1,y=PC3,col=pop)) +
+  geom_point()
+
+
+#########
+## fst ##
+#########
+
+#load fst
+fst <- read_tsv("/project/ctb-grego/biol470/koa_fola_lars/biol470_project/salmon_int.bcftools.maf1.pop1.pop2.weir.fst")
+
+#plot it
+#we only got this far, but we should probably make a grid of fst plots?
+#maybe a table of SNPs too?
+fst %>%
+  ggplot(.,aes(x=POS,y=WEIR_AND_COCKERHAM_FST)) +
+  geom_point() + facet_wrap(~CHROM)
+```
 
 
